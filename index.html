@@ -458,6 +458,141 @@ nav {
 }
 .modal-close:hover { color: var(--text); }
 
+/* ── Skill Detail Page ──────────────── */
+.skill-detail {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+.skill-detail-back {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-dim);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 32px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: color 0.15s;
+}
+.skill-detail-back:hover { color: var(--accent); }
+.skill-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.skill-detail-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+.skill-detail-title {
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 700;
+}
+.skill-detail-author {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.skill-detail-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.skill-detail-badges .skill-tag { font-size: 12px; padding: 4px 12px; }
+.skill-detail-badges .skill-chain { font-size: 11px; padding: 3px 8px; }
+.skill-detail-badges .skill-badge { font-size: 11px; padding: 3px 8px; }
+.skill-detail-desc {
+  font-size: 16px;
+  color: var(--text-mid);
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+.skill-detail-install-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 28px;
+}
+.skill-detail-install-box h4 {
+  font-family: var(--mono);
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: var(--text-dim);
+}
+.skill-detail-cmd {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent);
+  position: relative;
+  overflow-x: auto;
+}
+.skill-detail-cmd button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--border);
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+.skill-detail-cmd button:hover { color: var(--text); }
+.skill-detail-stats {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 28px;
+}
+.skill-detail-stat .num {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 600;
+}
+.skill-detail-stat .label {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.skill-detail-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.skill-detail-links a {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+.skill-detail-links a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  text-decoration: none;
+}
+
 /* ── Featured Banner ─────────────────── */
 .featured {
   background: linear-gradient(135deg, rgba(0, 212, 170, 0.06), rgba(129, 140, 248, 0.06));
@@ -622,6 +757,9 @@ footer a:hover { color: var(--accent); }
   </div>
 </div>
 
+<!-- Skill Detail (hidden by default) -->
+<div class="skill-detail" id="skill-detail" style="display:none"></div>
+
 <!-- Footer -->
 <footer>
   <p>cryptoskills.sh &mdash; built for agents that don't sleep &mdash; <a href="https://github.com/publu/cryptoskills">GitHub</a> &mdash; <a href="https://github.com/publu/cryptoskills/issues/new?template=submit-skill.yml">Submit a Skill</a></p>
@@ -635,13 +773,29 @@ let activeFilter = 'all';
 
 async function init() {
   const [skillsResp, statsResp] = await Promise.all([
-    fetch('skills.json'),
+    fetch('/skills.json'),
     fetch(API_BASE + '/api/stats').catch(() => null),
   ]);
   SKILLS = await skillsResp.json();
   if (statsResp && statsResp.ok) {
     allStats = await statsResp.json();
   }
+
+  // Check if we're on a skill detail page
+  const path = window.location.pathname;
+  const skillMatch = path.match(/^\/skill\/([a-z0-9-]+)\/?$/);
+  if (skillMatch) {
+    showDetail(skillMatch[1]);
+    return;
+  }
+
+  showRegistry();
+}
+
+function showRegistry() {
+  document.querySelector('.hero').style.display = '';
+  document.querySelector('.main').style.display = '';
+  document.getElementById('skill-detail').style.display = 'none';
 
   // Hero stats
   document.getElementById('stat-skills').textContent = SKILLS.length;
@@ -651,13 +805,113 @@ async function init() {
   const totalDl = Object.values(allStats).reduce((t, s) => t + (s.downloads || 0), 0);
   document.getElementById('stat-downloads').textContent = fmtNum(totalDl);
 
-  // Fire view events for visible skills
+  // Fire view events
   SKILLS.forEach(s => {
     fetch(API_BASE + '/api/view/' + s.name, { method: 'POST' }).catch(() => {});
   });
 
   applyFilters();
 }
+
+function showDetail(name) {
+  const s = SKILLS.find(sk => sk.name === name);
+  if (!s) { showRegistry(); return; }
+
+  document.title = `${s.name} — cryptoskills.sh`;
+  document.querySelector('.hero').style.display = 'none';
+  document.querySelector('.main').style.display = 'none';
+
+  const detail = document.getElementById('skill-detail');
+  detail.style.display = '';
+
+  const stats = allStats[s.name] || { views: 0, downloads: 0 };
+  const installUrl = `https://raw.githubusercontent.com/${s.repo}/master/${s.skill_file}`;
+  const installCmd = `curl -sL ${installUrl} >> ~/.claude/skills/${s.name}.md`;
+  const chains = s.chains || [];
+
+  detail.innerHTML = `
+    <button class="skill-detail-back" onclick="navigateTo('/')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+      Back to registry
+    </button>
+    <div class="skill-detail-header">
+      <div class="skill-detail-icon" style="background:${catBg(s.category)}">${s.icon}</div>
+      <div>
+        <div class="skill-detail-title">${s.name}</div>
+        <div class="skill-detail-author">by ${s.author} &middot; v${s.version}</div>
+      </div>
+    </div>
+    <div class="skill-detail-badges">
+      <span class="skill-tag tag-${s.category}">${s.category}</span>
+      ${chains.map(c => `<span class="skill-chain">${c}</span>`).join('')}
+      ${s.watch_only ? '<span class="skill-badge badge-watch-only">watch-only</span>' : ''}
+      ${s.wallet_required ? '<span class="skill-badge badge-wallet">wallet</span>' : ''}
+    </div>
+    <div class="skill-detail-desc">${s.desc}</div>
+    <div class="skill-detail-stats">
+      <div class="skill-detail-stat">
+        <div class="num">${fmtNum(stats.views)}</div>
+        <div class="label">views</div>
+      </div>
+      <div class="skill-detail-stat">
+        <div class="num">${fmtNum(stats.downloads)}</div>
+        <div class="label">downloads</div>
+      </div>
+    </div>
+    <div class="skill-detail-install-box">
+      <h4>Install</h4>
+      <div class="skill-detail-cmd">
+        <code id="detail-cmd">${installCmd}</code>
+        <button onclick="copyDetailCmd()">copy</button>
+      </div>
+    </div>
+    <div class="skill-detail-links">
+      <a href="https://github.com/${s.repo}" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        Source
+      </a>
+      ${s.link ? `<a href="${s.link}" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+        ${new URL(s.link).hostname.replace('www.','')}
+      </a>` : ''}
+      ${s.issue ? `<a href="https://github.com/publu/cryptoskills/issues/${s.issue}" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+        Issue #${s.issue}
+      </a>` : ''}
+    </div>
+  `;
+
+  // Track view
+  fetch(API_BASE + '/api/view/' + s.name, { method: 'POST' }).catch(() => {});
+}
+
+function navigateTo(path) {
+  history.pushState(null, '', path);
+  if (path === '/') {
+    document.title = 'cryptoskills.sh — The skill registry for crypto agents';
+    showRegistry();
+  } else {
+    const m = path.match(/^\/skill\/([a-z0-9-]+)\/?$/);
+    if (m) showDetail(m[1]);
+  }
+}
+
+function copyDetailCmd() {
+  const cmd = document.getElementById('detail-cmd').textContent;
+  navigator.clipboard.writeText(cmd);
+  const btn = document.querySelector('.skill-detail-cmd button');
+  btn.textContent = 'copied!';
+  setTimeout(() => btn.textContent = 'copy', 1500);
+  const name = window.location.pathname.match(/\/skill\/([a-z0-9-]+)/)?.[1];
+  if (name) fetch(API_BASE + '/api/download/' + name, { method: 'POST' }).catch(() => {});
+}
+
+window.addEventListener('popstate', () => {
+  const path = window.location.pathname;
+  const m = path.match(/^\/skill\/([a-z0-9-]+)\/?$/);
+  if (m) showDetail(m[1]);
+  else showRegistry();
+});
 
 function renderSkills(skills) {
   const grid = document.getElementById('skills-grid');
@@ -666,7 +920,7 @@ function renderSkills(skills) {
     const installUrl = `https://raw.githubusercontent.com/${s.repo}/master/${s.skill_file}`;
     const chains = (s.chains || []).slice(0, 4);
     return `
-    <div class="skill-card" onclick="showInstall('${s.name}')">
+    <div class="skill-card" onclick="navigateTo('/skill/${s.name}')">
       <div class="skill-header">
         <div class="skill-icon" style="background:${catBg(s.category)}">${s.icon}</div>
         <div class="skill-title-area">

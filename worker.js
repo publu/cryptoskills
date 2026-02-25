@@ -94,7 +94,8 @@ export default {
     }
 
     // Non-API: proxy to GitHub Pages
-    const ghPath = path === '/' ? '/index.html' : path;
+    // SPA fallback: /skill/* routes serve index.html
+    const ghPath = (path === '/' || path.startsWith('/skill/')) ? '/index.html' : path;
     const ghUrl = `https://publu.github.io/cryptoskills${ghPath}`;
     const ghResp = await fetch(ghUrl, {
       headers: { 'User-Agent': 'cryptoskills-worker' },
