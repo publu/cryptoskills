@@ -357,6 +357,17 @@ nav {
   background: var(--accent);
   color: var(--bg);
 }
+.skill-link {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.skill-link:hover { color: var(--accent); text-decoration: underline; }
 
 /* ── Install Modal ───────────────────── */
 .modal-overlay {
@@ -605,7 +616,8 @@ const SKILLS = [
     category: "yield",
     icon: "🏦",
     updated: "2d ago",
-    url: "goldbotsachs.com/skills/goldbot-sachs.md"
+    url: "goldbotsachs.com/skills/goldbot-sachs.md",
+    link: "https://goldbotsachs.com"
   },
   {
     name: "aave-sentinel",
@@ -616,7 +628,8 @@ const SKILLS = [
     category: "yield",
     icon: "👻",
     updated: "5d ago",
-    url: "cryptoskills.sh/skills/aave-sentinel.md"
+    url: "cryptoskills.sh/skills/aave-sentinel.md",
+    link: "https://aave.com"
   },
   {
     name: "polymarket-trader",
@@ -627,7 +640,8 @@ const SKILLS = [
     category: "trading",
     icon: "🎯",
     updated: "1d ago",
-    url: "cryptoskills.sh/skills/polymarket-trader.md"
+    url: "cryptoskills.sh/skills/polymarket-trader.md",
+    link: "https://polymarket.com"
   },
   {
     name: "uniswap-router",
@@ -638,7 +652,8 @@ const SKILLS = [
     category: "trading",
     icon: "🦄",
     updated: "3d ago",
-    url: "cryptoskills.sh/skills/uniswap-router.md"
+    url: "cryptoskills.sh/skills/uniswap-router.md",
+    link: "https://app.uniswap.org"
   },
   {
     name: "defillama-feed",
@@ -649,7 +664,8 @@ const SKILLS = [
     category: "data",
     icon: "🦙",
     updated: "1w ago",
-    url: "cryptoskills.sh/skills/defillama-feed.md"
+    url: "cryptoskills.sh/skills/defillama-feed.md",
+    link: "https://defillama.com"
   },
   {
     name: "dune-query",
@@ -660,7 +676,8 @@ const SKILLS = [
     category: "data",
     icon: "📊",
     updated: "4d ago",
-    url: "cryptoskills.sh/skills/dune-query.md"
+    url: "cryptoskills.sh/skills/dune-query.md",
+    link: "https://dune.com"
   },
   {
     name: "chain-bridge",
@@ -671,7 +688,8 @@ const SKILLS = [
     category: "infra",
     icon: "🌉",
     updated: "6d ago",
-    url: "cryptoskills.sh/skills/chain-bridge.md"
+    url: "cryptoskills.sh/skills/chain-bridge.md",
+    link: "https://layerzero.network"
   },
   {
     name: "gas-optimizer",
@@ -693,7 +711,8 @@ const SKILLS = [
     category: "trading",
     icon: "🐄",
     updated: "3d ago",
-    url: "cryptoskills.sh/skills/cow-swapper.md"
+    url: "cryptoskills.sh/skills/cow-swapper.md",
+    link: "https://cow.fi"
   },
   {
     name: "morpho-lender",
@@ -704,7 +723,8 @@ const SKILLS = [
     category: "yield",
     icon: "🦋",
     updated: "1w ago",
-    url: "cryptoskills.sh/skills/morpho-lender.md"
+    url: "cryptoskills.sh/skills/morpho-lender.md",
+    link: "https://morpho.org"
   },
   {
     name: "wallet-guard",
@@ -726,7 +746,8 @@ const SKILLS = [
     category: "yield",
     icon: "♻️",
     updated: "3d ago",
-    url: "cryptoskills.sh/skills/eigenlayer-restake.md"
+    url: "cryptoskills.sh/skills/eigenlayer-restake.md",
+    link: "https://eigenlayer.xyz"
   },
   {
     name: "nft-sniper",
@@ -748,7 +769,8 @@ const SKILLS = [
     category: "data",
     icon: "🔗",
     updated: "1w ago",
-    url: "cryptoskills.sh/skills/chainlink-oracle.md"
+    url: "cryptoskills.sh/skills/chainlink-oracle.md",
+    link: "https://chain.link"
   },
   {
     name: "permit2-approve",
@@ -770,7 +792,8 @@ const SKILLS = [
     category: "yield",
     icon: "🌀",
     updated: "4d ago",
-    url: "cryptoskills.sh/skills/curve-pool.md"
+    url: "cryptoskills.sh/skills/curve-pool.md",
+    link: "https://curve.fi"
   },
   {
     name: "revoke-allowance",
@@ -781,7 +804,8 @@ const SKILLS = [
     category: "security",
     icon: "🚫",
     updated: "6d ago",
-    url: "cryptoskills.sh/skills/revoke-allowance.md"
+    url: "cryptoskills.sh/skills/revoke-allowance.md",
+    link: "https://revoke.cash"
   },
   {
     name: "perp-trader",
@@ -792,7 +816,8 @@ const SKILLS = [
     category: "trading",
     icon: "📈",
     updated: "2d ago",
-    url: "cryptoskills.sh/skills/perp-trader.md"
+    url: "cryptoskills.sh/skills/perp-trader.md",
+    link: "https://gmx.io"
   },
 ];
 
@@ -813,6 +838,9 @@ function renderSkills(skills) {
       <div class="skill-desc">${s.desc}</div>
       <div class="skill-footer">
         <span class="skill-tag tag-${s.category}">${s.category}</span>
+        ${s.link ? `<a class="skill-link" href="${s.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+          ${new URL(s.link).hostname.replace('www.','')}</a>` : ''}
         <span class="skill-stat">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
           ${fmtNum(s.installs)}
