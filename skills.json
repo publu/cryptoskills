@@ -118,5 +118,20 @@
     "watch_only": false,
     "link": "https://conway.tech",
     "issue": 8
+  },
+  {
+    "name": "beefy-cli",
+    "author": "publu",
+    "version": "1.0.0",
+    "desc": "Browse Beefy Finance vaults across 35+ chains. APY breakdowns, TVL, fees, token search, protocol stats — rich terminal UI.",
+    "category": "yield",
+    "icon": "🐮",
+    "source_repo": "publu/beefy-cli",
+    "skill_file": "skills/beefy-cli.md",
+    "chains": ["ethereum", "base", "arbitrum", "optimism", "polygon", "bsc", "sonic", "monad", "avalanche", "fantom", "linea", "berachain"],
+    "wallet_required": false,
+    "watch_only": true,
+    "link": "https://beefy.finance",
+    "issue": 9
   }
 ]
