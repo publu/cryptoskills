@@ -313,6 +313,29 @@ nav {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.skill-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.skill-chain {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--bg-input);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+}
+.skill-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+.badge-watch-only { background: var(--blue-dim); color: var(--blue); }
+.badge-wallet { background: var(--amber-dim); color: var(--amber); }
 .skill-footer {
   display: flex;
   align-items: center;
@@ -340,6 +363,17 @@ nav {
   gap: 4px;
 }
 .skill-stat svg { width: 14px; height: 14px; }
+.skill-link {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.skill-link:hover { color: var(--accent); text-decoration: underline; }
 .skill-install {
   margin-left: auto;
   font-family: var(--mono);
@@ -357,17 +391,6 @@ nav {
   background: var(--accent);
   color: var(--bg);
 }
-.skill-link {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text-dim);
-  text-decoration: none;
-  transition: color 0.15s;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.skill-link:hover { color: var(--accent); text-decoration: underline; }
 
 /* ── Install Modal ───────────────────── */
 .modal-overlay {
@@ -518,8 +541,8 @@ footer a:hover { color: var(--accent); }
     </div>
     <div class="nav-links">
       <a href="#skills">Browse</a>
-      <a href="https://github.com/anthropics/claude-code">Docs</a>
-      <a href="https://github.com">GitHub</a>
+      <a href="https://github.com/publu/cryptoskills/issues/new?template=submit-skill.yml">Submit Skill</a>
+      <a href="https://github.com/publu/cryptoskills">GitHub</a>
     </div>
   </div>
 </nav>
@@ -530,23 +553,19 @@ footer a:hover { color: var(--accent); }
   <p>The skill registry for crypto agents. Browse, discover, and install agent skills in one command.</p>
   <div class="hero-search">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input type="text" placeholder="Search 47 skills..." id="hero-search-input">
+    <input type="text" placeholder="Search skills..." id="hero-search-input">
   </div>
   <div class="hero-stats">
     <div class="hero-stat">
-      <div class="num">47</div>
+      <div class="num" id="stat-skills">—</div>
       <div class="label">skills</div>
     </div>
     <div class="hero-stat">
-      <div class="num">12.4k</div>
-      <div class="label">installs</div>
+      <div class="num" id="stat-downloads">—</div>
+      <div class="label">downloads</div>
     </div>
     <div class="hero-stat">
-      <div class="num">23</div>
-      <div class="label">protocols</div>
-    </div>
-    <div class="hero-stat">
-      <div class="num">8</div>
+      <div class="num" id="stat-chains">—</div>
       <div class="label">chains</div>
     </div>
   </div>
@@ -567,17 +586,20 @@ footer a:hover { color: var(--accent); }
 
   <!-- Filters -->
   <div class="filters">
-    <button class="filter-btn active" onclick="filter('all', this)">All</button>
-    <button class="filter-btn" onclick="filter('yield', this)">Yield</button>
-    <button class="filter-btn" onclick="filter('trading', this)">Trading</button>
-    <button class="filter-btn" onclick="filter('data', this)">Data</button>
-    <button class="filter-btn" onclick="filter('infra', this)">Infrastructure</button>
-    <button class="filter-btn" onclick="filter('security', this)">Security</button>
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="yield">Yield</button>
+    <button class="filter-btn" data-filter="trading">Trading</button>
+    <button class="filter-btn" data-filter="data">Data</button>
+    <button class="filter-btn" data-filter="infra">Infrastructure</button>
+    <button class="filter-btn" data-filter="security">Security</button>
+    <span style="color:var(--border);margin:0 4px">|</span>
+    <button class="filter-btn" data-filter="watch_only">Watch Only</button>
+    <button class="filter-btn" data-filter="wallet">Wallet Needed</button>
     <div class="filter-sort">
       <span>Sort:</span>
-      <select id="sort-select" onchange="sortSkills()">
-        <option value="popular">Most Popular</option>
-        <option value="recent">Recently Added</option>
+      <select id="sort-select">
+        <option value="popular">Most Downloads</option>
+        <option value="views">Most Viewed</option>
         <option value="name">Name A-Z</option>
       </select>
     </div>
@@ -602,230 +624,48 @@ footer a:hover { color: var(--accent); }
 
 <!-- Footer -->
 <footer>
-  <p>cryptoskills.sh &mdash; built for agents that don't sleep &mdash; <a href="https://github.com">GitHub</a></p>
+  <p>cryptoskills.sh &mdash; built for agents that don't sleep &mdash; <a href="https://github.com/publu/cryptoskills">GitHub</a> &mdash; <a href="https://github.com/publu/cryptoskills/issues/new?template=submit-skill.yml">Submit a Skill</a></p>
 </footer>
 
 <script>
-const SKILLS = [
-  {
-    name: "goldbot-sachs",
-    author: "publu",
-    version: "1.2.0",
-    desc: "Yield infrastructure for AI agents. Deposit idle USDC into clawUSDC vault on Base. 4.12% APY, auto-compounding via Beefy + Morpho.",
-    installs: 2847,
-    category: "yield",
-    icon: "🏦",
-    updated: "2d ago",
-    url: "goldbotsachs.com/skills/goldbot-sachs.md",
-    link: "https://goldbotsachs.com"
-  },
-  {
-    name: "aave-sentinel",
-    author: "defi-labs",
-    version: "2.1.3",
-    desc: "Monitor Aave v3 positions across all chains. Auto-repay on health factor drops. Liquidation protection and position rebalancing.",
-    installs: 1923,
-    category: "yield",
-    icon: "👻",
-    updated: "5d ago",
-    url: "cryptoskills.sh/skills/aave-sentinel.md",
-    link: "https://aave.com"
-  },
-  {
-    name: "polymarket-trader",
-    author: "pred-markets",
-    version: "0.9.1",
-    desc: "Autonomous prediction market trading. Connects to Polymarket API, evaluates odds, places and manages positions based on configurable strategies.",
-    installs: 3201,
-    category: "trading",
-    icon: "🎯",
-    updated: "1d ago",
-    url: "cryptoskills.sh/skills/polymarket-trader.md",
-    link: "https://polymarket.com"
-  },
-  {
-    name: "uniswap-router",
-    author: "swap-labs",
-    version: "3.0.2",
-    desc: "Optimal swap routing across Uniswap v2/v3 pools. Multi-hop routing, MEV protection, and slippage optimization across 6 chains.",
-    installs: 4102,
-    category: "trading",
-    icon: "🦄",
-    updated: "3d ago",
-    url: "cryptoskills.sh/skills/uniswap-router.md",
-    link: "https://app.uniswap.org"
-  },
-  {
-    name: "defillama-feed",
-    author: "llama-data",
-    version: "1.4.0",
-    desc: "Real-time DeFi protocol data. TVL tracking, yield comparisons, protocol health monitoring. Structured output for agent consumption.",
-    installs: 1567,
-    category: "data",
-    icon: "🦙",
-    updated: "1w ago",
-    url: "cryptoskills.sh/skills/defillama-feed.md",
-    link: "https://defillama.com"
-  },
-  {
-    name: "dune-query",
-    author: "dune-mcp",
-    version: "1.1.0",
-    desc: "Execute and cache Dune Analytics queries. Schedule recurring queries, parse results into structured data for downstream agent tasks.",
-    installs: 982,
-    category: "data",
-    icon: "📊",
-    updated: "4d ago",
-    url: "cryptoskills.sh/skills/dune-query.md",
-    link: "https://dune.com"
-  },
-  {
-    name: "chain-bridge",
-    author: "bridge-ops",
-    version: "0.8.4",
-    desc: "Cross-chain asset transfers via LayerZero, Stargate, and Across. Automatic route selection for lowest fees and fastest settlement.",
-    installs: 1245,
-    category: "infra",
-    icon: "🌉",
-    updated: "6d ago",
-    url: "cryptoskills.sh/skills/chain-bridge.md",
-    link: "https://layerzero.network"
-  },
-  {
-    name: "gas-optimizer",
-    author: "gasman",
-    version: "2.0.1",
-    desc: "Smart gas management. Monitors gas prices, queues transactions for optimal timing, supports EIP-1559 and legacy chains.",
-    installs: 2156,
-    category: "infra",
-    icon: "⛽",
-    updated: "2d ago",
-    url: "cryptoskills.sh/skills/gas-optimizer.md"
-  },
-  {
-    name: "cow-swapper",
-    author: "cow-agents",
-    version: "1.0.3",
-    desc: "Gasless token swaps via CoW Protocol. ERC-2612 permit signing, solver network routing, MEV-protected batch auctions.",
-    installs: 1834,
-    category: "trading",
-    icon: "🐄",
-    updated: "3d ago",
-    url: "cryptoskills.sh/skills/cow-swapper.md",
-    link: "https://cow.fi"
-  },
-  {
-    name: "morpho-lender",
-    author: "morpho-labs",
-    version: "1.3.1",
-    desc: "Peer-to-peer lending on Morpho Blue. Browse curated markets, supply assets, manage positions. Supports Steakhouse and other curators.",
-    installs: 1102,
-    category: "yield",
-    icon: "🦋",
-    updated: "1w ago",
-    url: "cryptoskills.sh/skills/morpho-lender.md",
-    link: "https://morpho.org"
-  },
-  {
-    name: "wallet-guard",
-    author: "sec-agents",
-    version: "0.7.2",
-    desc: "Transaction simulation and approval screening. Detects malicious approvals, phishing contracts, and unlimited allowances before signing.",
-    installs: 876,
-    category: "security",
-    icon: "🛡️",
-    updated: "5d ago",
-    url: "cryptoskills.sh/skills/wallet-guard.md"
-  },
-  {
-    name: "eigenlayer-restake",
-    author: "restake-io",
-    version: "0.4.0",
-    desc: "Automated restaking on EigenLayer. Monitor operator performance, manage delegation, compound rewards across AVSs.",
-    installs: 643,
-    category: "yield",
-    icon: "♻️",
-    updated: "3d ago",
-    url: "cryptoskills.sh/skills/eigenlayer-restake.md",
-    link: "https://eigenlayer.xyz"
-  },
-  {
-    name: "nft-sniper",
-    author: "mint-bot",
-    version: "1.6.0",
-    desc: "NFT minting automation. Monitors contract deployments, detects mint functions, simulates and executes with configurable gas limits.",
-    installs: 2891,
-    category: "trading",
-    icon: "🎨",
-    updated: "1d ago",
-    url: "cryptoskills.sh/skills/nft-sniper.md"
-  },
-  {
-    name: "chainlink-oracle",
-    author: "oracle-ops",
-    version: "2.2.0",
-    desc: "Read Chainlink price feeds across 12 chains. Historical price data, deviation monitoring, and custom alert thresholds.",
-    installs: 1456,
-    category: "data",
-    icon: "🔗",
-    updated: "1w ago",
-    url: "cryptoskills.sh/skills/chainlink-oracle.md",
-    link: "https://chain.link"
-  },
-  {
-    name: "permit2-approve",
-    author: "permit-sdk",
-    version: "1.0.0",
-    desc: "Gasless token approvals via Permit2. Batch approvals, time-limited permissions, and automatic revocation scheduling.",
-    installs: 721,
-    category: "infra",
-    icon: "🔑",
-    updated: "2w ago",
-    url: "cryptoskills.sh/skills/permit2-approve.md"
-  },
-  {
-    name: "curve-pool",
-    author: "curve-agents",
-    version: "1.1.2",
-    desc: "Curve Finance pool management. LP deposits, gauge voting, reward harvesting, and optimal pool selection by TVL and APY.",
-    installs: 934,
-    category: "yield",
-    icon: "🌀",
-    updated: "4d ago",
-    url: "cryptoskills.sh/skills/curve-pool.md",
-    link: "https://curve.fi"
-  },
-  {
-    name: "revoke-allowance",
-    author: "sec-agents",
-    version: "1.2.0",
-    desc: "Scan and revoke token allowances. Detects over-approved contracts, prioritizes by risk score, batch revocation support.",
-    installs: 1567,
-    category: "security",
-    icon: "🚫",
-    updated: "6d ago",
-    url: "cryptoskills.sh/skills/revoke-allowance.md",
-    link: "https://revoke.cash"
-  },
-  {
-    name: "perp-trader",
-    author: "perp-labs",
-    version: "0.5.1",
-    desc: "Perpetual futures trading on GMX, dYdX, and Hyperliquid. Position management, funding rate arbitrage, and stop-loss automation.",
-    installs: 2234,
-    category: "trading",
-    icon: "📈",
-    updated: "2d ago",
-    url: "cryptoskills.sh/skills/perp-trader.md",
-    link: "https://gmx.io"
-  },
-];
-
+const API_BASE = '';
+let SKILLS = [];
+let allStats = {};
 let activeFilter = 'all';
+
+async function init() {
+  const [skillsResp, statsResp] = await Promise.all([
+    fetch('skills.json'),
+    fetch(API_BASE + '/api/stats').catch(() => null),
+  ]);
+  SKILLS = await skillsResp.json();
+  if (statsResp && statsResp.ok) {
+    allStats = await statsResp.json();
+  }
+
+  // Hero stats
+  document.getElementById('stat-skills').textContent = SKILLS.length;
+  const allChains = new Set();
+  SKILLS.forEach(s => (s.chains || []).forEach(c => allChains.add(c)));
+  document.getElementById('stat-chains').textContent = allChains.size;
+  const totalDl = Object.values(allStats).reduce((t, s) => t + (s.downloads || 0), 0);
+  document.getElementById('stat-downloads').textContent = fmtNum(totalDl);
+
+  // Fire view events for visible skills
+  SKILLS.forEach(s => {
+    fetch(API_BASE + '/api/view/' + s.name, { method: 'POST' }).catch(() => {});
+  });
+
+  applyFilters();
+}
 
 function renderSkills(skills) {
   const grid = document.getElementById('skills-grid');
-  grid.innerHTML = skills.map(s => `
+  grid.innerHTML = skills.map(s => {
+    const stats = allStats[s.name] || { views: 0, downloads: 0 };
+    const installUrl = `https://raw.githubusercontent.com/${s.repo}/master/${s.skill_file}`;
+    const chains = (s.chains || []).slice(0, 4);
+    return `
     <div class="skill-card" onclick="showInstall('${s.name}')">
       <div class="skill-header">
         <div class="skill-icon" style="background:${catBg(s.category)}">${s.icon}</div>
@@ -836,20 +676,28 @@ function renderSkills(skills) {
         <div class="skill-version">v${s.version}</div>
       </div>
       <div class="skill-desc">${s.desc}</div>
+      <div class="skill-meta">
+        ${chains.map(c => `<span class="skill-chain">${c}</span>`).join('')}
+        ${s.watch_only ? '<span class="skill-badge badge-watch-only">watch-only</span>' : ''}
+        ${s.wallet_required ? '<span class="skill-badge badge-wallet">wallet</span>' : ''}
+      </div>
       <div class="skill-footer">
         <span class="skill-tag tag-${s.category}">${s.category}</span>
         ${s.link ? `<a class="skill-link" href="${s.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
           ${new URL(s.link).hostname.replace('www.','')}</a>` : ''}
-        <span class="skill-stat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-          ${fmtNum(s.installs)}
+        <span class="skill-stat" title="Views">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          ${fmtNum(stats.views)}
         </span>
-        <span class="skill-stat">${s.updated}</span>
+        <span class="skill-stat" title="Downloads">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          ${fmtNum(stats.downloads)}
+        </span>
         <button class="skill-install" onclick="event.stopPropagation();showInstall('${s.name}')">install</button>
       </div>
     </div>
-  `).join('');
+  `}).join('');
 }
 
 function catBg(cat) {
@@ -858,21 +706,19 @@ function catBg(cat) {
 }
 
 function fmtNum(n) {
-  return n >= 1000 ? (n / 1000).toFixed(1) + 'k' : n;
-}
-
-function filter(cat, btn) {
-  activeFilter = cat;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  applyFilters();
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+  return n;
 }
 
 function applyFilters() {
   const q = (document.getElementById('hero-search-input').value || document.getElementById('nav-search-input').value).toLowerCase();
   let s = SKILLS.filter(sk => {
+    if (activeFilter === 'watch_only') return sk.watch_only;
+    if (activeFilter === 'wallet') return sk.wallet_required;
     if (activeFilter !== 'all' && sk.category !== activeFilter) return false;
-    if (q && !sk.name.includes(q) && !sk.desc.toLowerCase().includes(q) && !sk.author.includes(q)) return false;
+    if (q && !sk.name.includes(q) && !sk.desc.toLowerCase().includes(q) && !sk.author.includes(q)
+        && !(sk.chains || []).some(c => c.includes(q))) return false;
     return true;
   });
   sortList(s);
@@ -881,19 +727,18 @@ function applyFilters() {
 
 function sortList(arr) {
   const v = document.getElementById('sort-select').value;
-  if (v === 'popular') arr.sort((a, b) => b.installs - a.installs);
+  if (v === 'popular') arr.sort((a, b) => ((allStats[b.name]||{}).downloads||0) - ((allStats[a.name]||{}).downloads||0));
+  else if (v === 'views') arr.sort((a, b) => ((allStats[b.name]||{}).views||0) - ((allStats[a.name]||{}).views||0));
   else if (v === 'name') arr.sort((a, b) => a.name.localeCompare(b.name));
-  // 'recent' keeps default order
 }
-
-function sortSkills() { applyFilters(); }
 
 function showInstall(name) {
   const s = SKILLS.find(sk => sk.name === name);
   if (!s) return;
+  const url = `https://raw.githubusercontent.com/${s.repo}/master/${s.skill_file}`;
   document.getElementById('modal-title').textContent = 'Install ' + s.name;
   document.getElementById('modal-desc').textContent = s.desc;
-  document.getElementById('modal-cmd').textContent = `curl -sL ${s.url} >> ~/.claude/skills/${s.name}.md`;
+  document.getElementById('modal-cmd').textContent = `curl -sL ${url} >> ~/.claude/skills/${s.name}.md`;
   document.getElementById('modal').classList.add('open');
 }
 
@@ -907,17 +752,31 @@ function copyInstall() {
   const btn = document.querySelector('.modal-copy');
   btn.textContent = 'copied!';
   setTimeout(() => btn.textContent = 'copy', 1500);
+
+  // Track download
+  const name = document.getElementById('modal-title').textContent.replace('Install ', '');
+  fetch(API_BASE + '/api/download/' + name, { method: 'POST' }).catch(() => {});
 }
 
-// Search listeners
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    activeFilter = this.dataset.filter;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    applyFilters();
+  });
+});
+
+// Search + sort listeners
 document.getElementById('hero-search-input').addEventListener('input', applyFilters);
 document.getElementById('nav-search-input').addEventListener('input', function() {
   document.getElementById('hero-search-input').value = this.value;
   applyFilters();
 });
+document.getElementById('sort-select').addEventListener('change', applyFilters);
 
-// Init
-applyFilters();
+init();
 </script>
 </body>
 </html>
