@@ -6,7 +6,7 @@
     "desc": "Yield infrastructure for AI agents. Deposit idle USDC into clawUSDC vault on Base. 4.12% APY, auto-compounding via Beefy + Morpho.",
     "category": "yield",
     "icon": "🏦",
-    "source_repo": "publu/goldbot-claws",
+    "source_repo": "publu/goldbotsachs",
     "skill_file": "skills/goldbot-sachs.md",
     "chains": ["base"],
     "wallet_required": true,
