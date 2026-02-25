@@ -1,0 +1,114 @@
+name: Submit a Skill
+description: Submit a new skill to the cryptoskills.sh registry
+title: "[Skill] "
+labels: ["submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for submitting a skill! Fill out the details below and we'll review it.
+
+  - type: input
+    id: name
+    attributes:
+      label: Skill Name
+      description: "Lowercase, hyphenated (e.g. aave-sentinel)"
+      placeholder: "my-cool-skill"
+    validations:
+      required: true
+
+  - type: input
+    id: repo
+    attributes:
+      label: GitHub Repo
+      description: "owner/repo format"
+      placeholder: "publu/aave-sentinel"
+    validations:
+      required: true
+
+  - type: input
+    id: skill_file
+    attributes:
+      label: Skill File Path
+      description: "Path to the .md skill file in your repo"
+      placeholder: "aave-sentinel.md"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: "One or two sentences about what the skill does"
+      placeholder: "Monitor Aave v3 positions across 9 chains. Health factor tracking and risk classification."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - yield
+        - trading
+        - data
+        - infra
+        - security
+    validations:
+      required: true
+
+  - type: input
+    id: chains
+    attributes:
+      label: Chains / Protocols
+      description: "Comma-separated list of chains or protocols this works with"
+      placeholder: "ethereum, base, arbitrum"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: wallet_required
+    attributes:
+      label: Wallet Required?
+      description: "Does this skill need a wallet/private key to function?"
+      options:
+        - "No"
+        - "Yes"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: watch_only
+    attributes:
+      label: Watch Only?
+      description: "Is this skill read-only (monitoring/viewing) or can it execute transactions?"
+      options:
+        - "Yes — read-only / monitoring"
+        - "No — can execute transactions"
+    validations:
+      required: true
+
+  - type: input
+    id: icon
+    attributes:
+      label: Icon
+      description: "Single emoji for the skill card"
+      placeholder: "👻"
+    validations:
+      required: true
+
+  - type: input
+    id: link
+    attributes:
+      label: Protocol Link
+      description: "URL to the protocol's website (optional)"
+      placeholder: "https://aave.com"
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "Semver version"
+      placeholder: "1.0.0"
+    validations:
+      required: true
