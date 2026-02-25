@@ -88,5 +88,20 @@
     "watch_only": false,
     "link": "https://polymarket.com",
     "issue": 6
+  },
+  {
+    "name": "gearbox-sentinel",
+    "author": "publu",
+    "version": "1.0.0",
+    "desc": "Monitor Gearbox Finance lending pools, APY, rewards, and credit account positions by wallet address. On-chain CreditManager queries.",
+    "category": "yield",
+    "icon": "⚙️",
+    "source_repo": "publu/gearbox-sentinel",
+    "skill_file": "skills/gearbox-sentinel.md",
+    "chains": ["ethereum", "monad", "plasma", "etherlink", "lisk"],
+    "wallet_required": false,
+    "watch_only": true,
+    "link": "https://gearbox.finance",
+    "issue": 7
   }
 ]
