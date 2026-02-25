@@ -42,6 +42,8 @@ body {
   color: var(--text);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 
 a { color: var(--accent); text-decoration: none; }
@@ -654,13 +656,121 @@ footer a { color: var(--text-dim); }
 footer a:hover { color: var(--accent); }
 
 /* ── Responsive ──────────────────────── */
+
+/* Tablet */
+@media (max-width: 900px) {
+  .skills-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .hero h1 { font-size: 36px; }
+  .hero p { font-size: 16px; }
+  .nav-inner { gap: 16px; }
+  .nav-links a:first-child { display: none; }
+  .filter-sort { margin-left: 0; width: 100%; margin-top: 4px; }
+  .skill-detail-title { font-size: 24px; }
+}
+
+/* Mobile */
 @media (max-width: 640px) {
-  .hero h1 { font-size: 28px; }
+  /* Nav */
+  .nav-inner { padding: 0 16px; gap: 10px; }
+  .nav-logo { font-size: 14px; }
+  .nav-search input { font-size: 13px; padding: 7px 12px 7px 32px; }
+  .nav-links { display: none; }
+
+  /* Hero */
+  .hero { padding: 48px 16px 32px; }
+  .hero h1 { font-size: 26px; letter-spacing: -0.5px; }
+  .hero p { font-size: 15px; margin-bottom: 24px; }
+  .hero-search { margin-bottom: 28px; }
+  .hero-search input { padding: 12px 16px 12px 40px; font-size: 14px; }
   .hero-stats { gap: 24px; }
   .hero-stat .num { font-size: 22px; }
-  .skills-grid { grid-template-columns: 1fr; }
-  .featured { flex-direction: column; align-items: flex-start; }
-  .nav-links { display: none; }
+  .hero-stat .label { font-size: 12px; }
+
+  /* Main */
+  .main { padding: 0 16px 48px; }
+
+  /* Featured */
+  .featured {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 20px;
+    gap: 12px;
+  }
+  .featured-text h3 { font-size: 14px; }
+  .featured-text p { font-size: 12px; }
+  .featured-btn { width: 100%; text-align: center; padding: 10px; }
+
+  /* Filters */
+  .filters {
+    gap: 8px;
+    padding: 20px 0 16px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .filters::-webkit-scrollbar { display: none; }
+  .filters > span { display: none; }
+  .filter-btn { font-size: 12px; padding: 5px 12px; flex-shrink: 0; }
+  .filter-sort {
+    margin-left: 0;
+    width: 100%;
+    margin-top: 4px;
+    justify-content: flex-end;
+  }
+
+  /* Grid */
+  .skills-grid { grid-template-columns: 1fr; gap: 12px; }
+
+  /* Cards */
+  .skill-card { padding: 16px; gap: 10px; }
+  .skill-icon { width: 36px; height: 36px; font-size: 18px; }
+  .skill-name { font-size: 14px; }
+  .skill-author { font-size: 11px; }
+  .skill-version { font-size: 10px; padding: 1px 6px; }
+  .skill-desc { font-size: 13px; }
+  .skill-footer { gap: 10px; flex-wrap: wrap; }
+  .skill-stat { font-size: 11px; }
+  .skill-link { font-size: 10px; }
+  .skill-install { font-size: 10px; padding: 4px 10px; }
+
+  /* Modal */
+  .modal { padding: 20px; border-radius: 10px; }
+  .modal h3 { font-size: 16px; }
+  .modal p { font-size: 13px; margin-bottom: 14px; }
+  .modal-code { padding: 12px; font-size: 11px; word-break: break-all; }
+
+  /* Detail page */
+  .skill-detail { padding: 32px 16px 48px; }
+  .skill-detail-back { margin-bottom: 20px; font-size: 12px; }
+  .skill-detail-header { gap: 12px; margin-bottom: 16px; }
+  .skill-detail-icon { width: 44px; height: 44px; font-size: 22px; border-radius: 10px; }
+  .skill-detail-title { font-size: 20px; }
+  .skill-detail-author { font-size: 13px; }
+  .skill-detail-desc { font-size: 14px; margin-bottom: 20px; }
+  .skill-detail-stats { gap: 24px; margin-bottom: 20px; }
+  .skill-detail-stat .num { font-size: 18px; }
+  .skill-detail-install-box { padding: 16px; margin-bottom: 20px; }
+  .skill-detail-cmd { font-size: 11px; padding: 12px 14px; word-break: break-all; }
+  .skill-detail-cmd code { word-break: break-all; }
+  .skill-detail-links { gap: 10px; }
+  .skill-detail-links a { font-size: 12px; padding: 6px 12px; }
+
+  /* Footer */
+  footer { padding: 24px 16px; }
+  footer p { font-size: 12px; }
+}
+
+/* Small phones */
+@media (max-width: 380px) {
+  .hero h1 { font-size: 22px; }
+  .hero-stats { gap: 16px; flex-wrap: wrap; }
+  .hero-stat .num { font-size: 20px; }
+  .skill-name { font-size: 13px; }
+  .skill-footer { gap: 6px; }
+  .skill-stat { font-size: 10px; }
+  .skill-detail-title { font-size: 18px; }
+  .skill-detail-cmd { font-size: 10px; }
 }
 </style>
 </head>
