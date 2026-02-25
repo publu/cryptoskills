@@ -103,5 +103,20 @@
     "watch_only": true,
     "link": "https://gearbox.finance",
     "issue": 7
+  },
+  {
+    "name": "conway-terminal",
+    "author": "publu",
+    "version": "1.0.0",
+    "desc": "Sovereign compute for AI agents. Cloud VMs, domain registration, frontier model inference, and autonomous USDC payments via x402 — all through MCP tools.",
+    "category": "infra",
+    "icon": "🖥️",
+    "source_repo": "publu/conway-terminal-skill",
+    "skill_file": "skills/conway-terminal.md",
+    "chains": ["base"],
+    "wallet_required": true,
+    "watch_only": false,
+    "link": "https://conway.tech",
+    "issue": 8
   }
 ]
