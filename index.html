@@ -346,6 +346,8 @@ nav {
   gap: 16px;
   margin-top: auto;
   padding-top: 8px;
+  min-width: 0;
+  overflow: hidden;
 }
 .skill-tag {
   font-family: var(--mono);
@@ -376,6 +378,10 @@ nav {
   display: flex;
   align-items: center;
   gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .skill-link:hover { color: var(--accent); text-decoration: underline; }
 .skill-install {
