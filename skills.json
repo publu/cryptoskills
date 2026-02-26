@@ -133,5 +133,20 @@
     "watch_only": true,
     "link": "https://beefy.finance",
     "issue": 9
+  },
+  {
+    "name": "pendle-cli",
+    "author": "publu",
+    "version": "1.0.0",
+    "desc": "Browse Pendle Finance yield trading markets across 10 chains. Implied APYs, TVL, PT/YT supply, expiry tracking, protocol stats — rich terminal UI.",
+    "category": "yield",
+    "icon": "🔮",
+    "source_repo": "publu/pendle-cli",
+    "skill_file": "skills/pendle-cli.md",
+    "chains": ["ethereum", "arbitrum", "base", "bsc", "mantle", "swell", "sonic", "hyperliquid", "optimism", "berachain"],
+    "wallet_required": false,
+    "watch_only": true,
+    "link": "https://pendle.finance",
+    "issue": 10
   }
 ]
