@@ -148,5 +148,20 @@
     "watch_only": true,
     "link": "https://pendle.finance",
     "issue": 10
+  },
+  {
+    "name": "safe-buddy",
+    "author": "publu",
+    "version": "1.0.0",
+    "desc": "Track Safe multisig wallets across 20+ chains. Pending signatures, signer status, transaction history, live watch mode — rich terminal UI.",
+    "category": "infra",
+    "icon": "🔐",
+    "source_repo": "publu/safe-buddy",
+    "skill_file": "skills/safe-buddy.md",
+    "chains": ["ethereum", "base", "arbitrum", "optimism", "polygon", "gnosis", "avalanche", "bsc", "zksync", "scroll", "linea", "blast", "berachain"],
+    "wallet_required": false,
+    "watch_only": true,
+    "link": "https://safe.global",
+    "issue": 11
   }
 ]
