@@ -158,7 +158,7 @@
     "icon": "🔐",
     "source_repo": "publu/safe-buddy",
     "skill_file": "skills/safe-buddy.md",
-    "chains": ["ethereum", "base", "arbitrum", "optimism", "polygon", "gnosis", "avalanche", "bsc", "zksync", "scroll", "linea", "blast", "berachain"],
+    "chains": ["ethereum", "base", "arbitrum", "optimism", "polygon", "gnosis", "avalanche", "bsc", "zksync", "scroll", "linea", "berachain", "mantle", "celo", "sonic", "ink"],
     "wallet_required": false,
     "watch_only": true,
     "link": "https://safe.global",
